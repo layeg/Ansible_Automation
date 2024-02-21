@@ -1,0 +1,37 @@
+---
+- name: Update Windows Servers
+  hosts: all
+  gather_facts: true
+  ignore_errors: true
+  vars:
+    log_file: C:\Windows\Temp\ansible_available_updates.txt
+  tasks:
+    - name: Check for available updates
+      win_updates:
+        category_names:
+          - SecurityUpdates
+          - UpdateRollups
+          - CriticalUpdates
+        state: searched
+        log_path: "{{ log_file }}"
+    - name: Available  updates are captured
+      win_shell: "type {{ log_file }}"
+      register: file_output
+
+    - name: Available updates found
+      debug:
+        msg: "Available updates found!"
+      when: "'Adding update' in file_output.stdout"
+
+    - name: Install updates if available
+      win_updates:
+        category_names:
+          - SecurityUpdates
+          - UpdateRollups
+          - CriticalUpdates
+        state: installed
+      register: update_result
+
+    - name: Reboot if updates require a reboot
+      win_reboot:
+      when: update_result.reboot_required 
