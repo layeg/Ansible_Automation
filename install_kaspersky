@@ -1,0 +1,19 @@
+---
+- name: Install Kaspersky on Windows
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Download Kaspersky installer
+      win_get_url:
+        url: "https://products.s.kaspersky-labs.com/homeuser/Kaspersky4Win2021/21.16.6.467/french-0.194.0/3831303135387c44454c7c31_35811/kaspersky4win202121.16.6.467fr_35811.exe"
+        dest: C:\temp\KasperskyInstaller.exe
+
+    - name: Install Kaspersky
+      win_shell: |
+        Start-Process -FilePath C:\temp\kasperskyInstaller.exe -Wait
+      ignore_errors: yes
+
+    - name: Remove downloaded installer
+      win_shell: Remove-Item -Path "C:\temp\KasperskyInstaller.exe" -Force
+      args:
+        executable: powershell.exe
