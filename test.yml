@@ -1,6 +1,6 @@
 ---
  - name: Test
-   hosts: localhost
+   hosts: all
    tasks:
      - name: Update 
        ansible.builtin.yum:
