@@ -1,0 +1,8 @@
+---
+ - name: cretae_file
+   hosts: all
+   tasks:
+      - name: file
+        ansible.builtin.file:
+           name: test472
+           state: touch
